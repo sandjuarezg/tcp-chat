@@ -6,7 +6,12 @@ go run server/main.go [host] [post]
 ```
 
 ## Client
-Netcat
+* Go
+```scriptshell
+go run client/main.go [host] [post]
+```
+
+* Netcat
 ```scriptshell
 nc [host] [post]
 ```
