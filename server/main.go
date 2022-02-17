@@ -13,12 +13,12 @@ var conns []net.Conn
 
 func main() {
 	if len(os.Args) != 3 {
-		log.Fatalln("Insufficient arguments: [host] [port]")
+		log.Fatal("Insufficient arguments: [host] [port]")
 	}
 
 	ln, err := net.Listen("tcp", fmt.Sprintf("%s:%s", os.Args[1], os.Args[2]))
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 	defer ln.Close()
 
@@ -27,7 +27,7 @@ func main() {
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
-			log.Fatalln(err)
+			log.Fatal(err)
 		}
 
 		go handleRequest(conn)
@@ -47,7 +47,7 @@ func handleRequest(conn net.Conn) (err error) {
 	// write message
 	_, err = conn.Write([]byte(mess))
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	reply := make([]byte, 1024)
@@ -71,7 +71,7 @@ func handleRequest(conn net.Conn) (err error) {
 	for _, element := range conns {
 		_, err = element.Write([]byte(mess))
 		if err != nil {
-			log.Fatalln(err)
+			log.Fatal(err)
 		}
 	}
 
@@ -94,7 +94,7 @@ func handleRequest(conn net.Conn) (err error) {
 
 					_, err = element.Write([]byte(mess))
 					if err != nil {
-						log.Fatalln(err)
+						log.Fatal(err)
 					}
 				}
 
@@ -110,7 +110,7 @@ func handleRequest(conn net.Conn) (err error) {
 		for _, element := range conns {
 			_, err = element.Write([]byte(fmt.Sprintf("%s: %s", name, reply[:n])))
 			if err != nil {
-				log.Fatalln(err)
+				log.Fatal(err)
 			}
 		}
 	}
