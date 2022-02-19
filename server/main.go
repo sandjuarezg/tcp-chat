@@ -7,13 +7,14 @@ import (
 	"log"
 	"net"
 	"os"
+	"time"
 )
 
 var conns []net.Conn
 
 func main() {
 	if len(os.Args) != 3 {
-		log.Fatal("Insufficient arguments: [host] [port]")
+		log.Fatal("Invalid input: [host] [port]")
 	}
 
 	ln, err := net.Listen("tcp", fmt.Sprintf("%s:%s", os.Args[1], os.Args[2]))
@@ -106,11 +107,17 @@ func handleRequest(conn net.Conn) (err error) {
 			}
 		}
 
+		if string(reply[:n]) == "\n" {
+			continue
+		}
+
 		// write message to all connections
 		for _, element := range conns {
-			_, err = element.Write([]byte(fmt.Sprintf("%s: %s", name, reply[:n])))
-			if err != nil {
-				log.Fatal(err)
+			if element != conn {
+				_, err = element.Write([]byte(fmt.Sprintf("%s (%s): %s", name, time.Now().Format(time.RFC822Z), reply[:n])))
+				if err != nil {
+					log.Fatal(err)
+				}
 			}
 		}
 	}
