@@ -71,19 +71,16 @@ func main() {
 	}(&wg)
 
 	// read from connection
-	wg.Add(1)
-	go func(wg *sync.WaitGroup) {
-		defer wg.Done()
-		for {
-			// read messages
-			n, err = conn.Read(reply)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			fmt.Printf("%s", reply[:n])
+	for {
+		// read messages
+		n, err = conn.Read(reply)
+		if err != nil {
+			log.Fatal(err)
+			break
 		}
-	}(&wg)
+
+		fmt.Printf("%s", reply[:n])
+	}
 
 	wg.Wait()
 
